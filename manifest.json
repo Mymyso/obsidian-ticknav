@@ -1,0 +1,9 @@
+{
+  "id": "ticknav",
+  "name": "Tick Nav",
+  "version": "1.0.0",
+  "minAppVersion": "1.4.0",
+  "description": "Right-side tick-mark navigation for headings.",
+  "author": "Claude",
+  "isDesktopOnly": false
+}

@@ -1,0 +1,102 @@
+.ticknav {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: calc(var(--max, 36px) + 12px);
+  max-height: 80%;
+  display: flex;
+  flex-direction: column;
+  z-index: 20;
+  pointer-events: none;            /* 空白区域不挡住正文的点击和选择 */
+}
+
+.ticknav-list {
+  min-height: 0;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;         /* 左对齐，和效果图一致；想右对齐改成 flex-end */
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.ticknav-list::-webkit-scrollbar { display: none; }
+
+.ticknav-tick {
+  --w: 8px;
+  --o: .3;
+  flex: none;
+  width: var(--w);
+  height: 2px;
+  padding: 8px 0;                  /* 加大点击区域，同时决定刻度间距 */
+  box-sizing: content-box;
+  border-radius: 2px;
+  background-color: var(--text-faint);
+  background-clip: content-box;
+  opacity: var(--o);
+  cursor: pointer;
+  pointer-events: auto;
+  /* 长度变化带轻微回弹 */
+  transition:
+    width .45s cubic-bezier(.34, 1.56, .64, 1),
+    opacity .25s ease,
+    background-color .25s ease;
+}
+
+.ticknav-tick.active {
+  opacity: 1;
+  background-color: var(--text-normal);
+}
+
+/* 只让真实鼠标悬停触发，避免手机轻触留下 :hover 状态 */
+@media (hover: hover) and (pointer: fine) {
+  .ticknav-tick:hover {
+    opacity: 1;
+    background-color: var(--text-muted);
+    width: calc(var(--w) + 6px);
+  }
+  .ticknav-tick.active:hover {
+    background-color: var(--text-normal);
+  }
+}
+
+/* 悬停 / 点击时显示的标题，放在刻度条左侧 */
+.ticknav-label {
+  position: absolute;
+  right: calc(100% + 4px);
+  transform: translate(6px, -50%);
+  max-width: 260px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-normal);
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s ease, transform .15s ease, top .1s ease-out;
+}
+.ticknav-label.show {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+/* 切换到新笔记时：刻度从右侧依次滑入 */
+.ticknav.enter .ticknav-tick {
+  transform-origin: left center;
+  animation: ticknav-in .5s cubic-bezier(.22, 1, .36, 1) both;
+  animation-delay: calc(var(--i) * 28ms);
+}
+@keyframes ticknav-in {
+  from { opacity: 0; transform: translateX(14px) scaleX(.3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticknav-tick, .ticknav-label { transition: none !important; }
+  .ticknav.enter .ticknav-tick { animation: none; }
+}
